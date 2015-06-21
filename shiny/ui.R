@@ -1,5 +1,5 @@
 
-# This is the server logic for a Shiny web application.
+# This is the user-interface definition of a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
 # http://shiny.rstudio.com
@@ -7,67 +7,49 @@
 
 library(shiny)
 
-shinyServer(function(input, output) {
+shinyUI(fluidPage(
 
-  output$fNumResponse <- renderText({
-    
-    retValue <- ""
-    fNum <- as.numeric(input$fNum)
-    
-    if(fNum >= 5.6) {
-      retValue <- paste(
-                    retValue, 
-                    "Your will gain depth of field but you will need more light
-                     in your scene.")
-    } else {
-      retValue <- paste(
-                    retValue,
-                    "You do not need a lot of light but you are losing depth 
-                     of field.")
-    }
-    
-    retValue
+  # Application title
+  titlePanel("Photo f-number, shutter and ISO app"),
 
-  })
-  
-  output$shutterResponse <- renderText({
-    
-    retValue <- ""
-    shutter <- as.numeric(input$shutter)
-    
-    if(shutter < 60) {
-      retValue <- paste(
-        retValue, 
-        "You need to mantain the camera as stable as possible. 
-         Tripod use is recommended. But your scene could be a dark one.")
-    } else {
-      retValue <- paste(
-        retValue,
-        "You are going to capture fast moving objects but the scene needs
-         a lot of light.")
-    }
-    
-    retValue
-    
-  })
-  
-  output$isoResponse <- renderText({
-    
-    retValue <- ""
-    iso <- as.numeric(input$iso)
-    
-    if(iso > 400) {
-      retValue <- paste(
-        retValue, 
-        "You do not need a lot of light but the grained picture will be the result.")
-    } else {
-      retValue <- paste(
-        retValue,
-        "You need light!")
-    }
-    
-    retValue
-    
-  })
+  # Sidebar with a slider input for number of bins
+  sidebarLayout(
+    sidebarPanel(
+      helpText("You can choose differente measures from a SLR camera and the 
+                app is going to tell you how your picture will be changed."),
+      selectInput("fNum", "f-number:",
+                  c("1.8" = 1.8,
+                    "2" = 2,
+                    "2.8" = 2.8,
+                    "4" = 4,
+                    "5.6" = 5.6,
+                    "8" = 8,
+                    "11" = 11,
+                    "16" = 16,
+                    "22" = 22)),
+      selectInput("shutter", "Shutter:",
+                  c("1/1000" = 1000,
+                    "1/500" = 500,
+                    "1/250" = 250,
+                    "1/125" = 125,
+                    "1/60" = 60,
+                    "1/30" = 30,
+                    "1/15" = 15,
+                    "1/8" = 8,
+                    "1/4" = 4,
+                    "1/2" = 2)),
+      selectInput("iso", "ISO:",
+                  c("100" = 100,
+                    "200" = 200,
+                    "400" = 400,
+                    "800" = 800))
+    ),
 
-})
+    # Show a plot of the generated distribution
+    mainPanel(
+      textOutput("fNumResponse"),
+      textOutput("shutterResponse"),
+      textOutput("isoResponse")
+    )
+  )
+))
